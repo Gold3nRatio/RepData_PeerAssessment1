@@ -12,7 +12,8 @@ The original data set contained 3 variables: steps, date and time interval.  The
 
 ## Cleaning Data ##
 Since the time interval variable from the data set is a numeric vector, it is beneficial to clean the data to date variable.  The following R codes clean the data and set a new column as "datetime".
-```{r}
+
+```r
 myFile <- "/home/eric/Documents/Coursea/"
 myFile <- paste0(myFile, "DataScience/repResearch/RepData_PeerAssessment1/")
 myFile <- paste0(myFile, "activity.csv")
@@ -33,7 +34,8 @@ names(mydata) <- c("steps", "date", "interval", "datetime")
 
 ## Mean Steps per Day ##
 To understand the user's daily activity behavior, let's observe the overview of the two months' daily steps.  The chart below shows the daily steps taken by the user.  From observation, the average daily step taken is around 10,000 steps.
-```{r}
+
+```r
 ## plot the histogram for steps taken per day ####
 library(ggplot2)
 # summarize the data at the day level
@@ -44,17 +46,32 @@ ds <- ds+geom_bar(stat="identity")
 ds
 ```
 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
+
 The exact average steps taken could be found by employing the mean and media function from R.  
-```{r}
+
+```r
 # calcuate the mean and median steps taken per day ####
 mean(dailyStep$steps, na.rm=TRUE)
+```
+
+```
+## [1] 9354
+```
+
+```r
 median(dailyStep$steps, na.rm=TRUE)
+```
+
+```
+## [1] 10395
 ```
 
 ## Daily Activity Pattern ##
 To observe the user's daily activity base on hours of the day, the following chart will uses the average steps taken on a given time interval over 2-month of data to plot a time series chart.  
 
-```{r}
+
+```r
 # what is the daily pattern like on 5 min intervals ####
 # plot time series on 5 min interval vs. avg steps taken
 intervalAvg <- aggregate(mydata$step, by=list(mydata$interval), FUN=mean, na.rm=TRUE)
@@ -68,21 +85,35 @@ ia <- ia+geom_smooth(method="loess")
 ia
 ```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
+
 The plot shows the user being most active during the morning hours between 8 and 9am.  The most active 5-minute interval could be found using the following R codes.
-```{r}
+
+```r
 subset(intervalAvg, avgInterval == max(intervalAvg$avgInterval), select=c(interval))
+```
+
+```
+##     interval
+## 104      835
 ```
 
 ## Missing Values ##
 There are many missing values within the database.  To replace the missing values, the average steps for each interval is calculated over the 2-month period and assigned if steps are missing. 
 
 Number of Rows with Missing Data:
-```{r}
+
+```r
 sum(is.na(mydata$steps))
 ```
 
+```
+## [1] 2304
+```
+
 The for loop cycles through every record in the dataframe and check if there is a missing record.  If the check is true, it replaces the value with the mean time interval value.
-```{r}
+
+```r
 # create new dataframe to track the clean data
 # run for loop through the df and replace NA with interval average
 mydataClean <- mydata
@@ -94,7 +125,8 @@ for (i in 1:nrow(mydataClean)) {
 ```
 
 Plot the histogram with the new data.
-```{r}
+
+```r
 # make histogram for the new data
 dailyStepClean <- aggregate(mydataClean$step, by=list(mydataClean$date), FUN=sum , na.rm=TRUE)
 names(dailyStepClean) <- c("date", "steps")
@@ -104,17 +136,32 @@ dsc <- dsc+geom_bar(stat="identity")
 dsc
 ```
 
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8.png) 
+
 Comparing the histograms, the new chart clearly shown more steps taken by the user.  The mean and median of the steps taken also shown an increase from the previous dataset.
-```{r}
+
+```r
 mean(dailyStepClean$steps, na.rm=TRUE)
+```
+
+```
+## [1] 10766
+```
+
+```r
 median(dailyStepClean$steps, na.rm=TRUE)
+```
+
+```
+## [1] 10766
 ```
 
 ## Weekdays vs. Weekend ##
 In general, a person with weekday work hours will show difference on the walking activity between weekdays and weekends.  To highlight the trend, the dates from the dataframe will be assigned a new factor column to differentiate the two categories.  
 
 The following R code tests each row and assigns "Weekend" if the date is either Saturday or Sunday.  The rest of the dates will get a "Weekday" value.  Using the new dataset, the time interval average is calculated between the weekday and weekend categories.
-```{r}
+
+```r
 # what is the difference between weekday and weekend activities ####
 mydataClean["weekdays"] <- NA
 for (i in 1:nrow(mydataClean)){
@@ -133,13 +180,16 @@ names(wkAvg) <- c("interval", "weekdays", "steps")
 ```
 
 Plot the time series steps taken between weekdays and weekends.
-```{r}
+
+```r
 wk <- qplot(interval, steps, data=wkAvg, main="Weekday vs. Weekend")
 wk <- wk + geom_line()
 wk <- wk + facet_grid(weekdays ~ .)
 wk <- wk + geom_smooth(method="loess")
 wk
 ```
+
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11.png) 
 
 On average, the user tends to perform majority of the walking exercise in the mornings during the weekdays.  The trend changes for the weekend days.  During the weekend, the user decreased the walking activities performed in the morning and have a slightly higher walking activity in the afternoons and evenings.
 
