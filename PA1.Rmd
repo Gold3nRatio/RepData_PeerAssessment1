@@ -1,7 +1,7 @@
 ---
 title: "Daily Activity Analytic"
-date: "08/17/2014"
 output: html_document
+date: "08/17/2014"
 ---
 
 # Reproducible Research #
@@ -52,7 +52,7 @@ median(dailyStep$steps, na.rm=TRUE)
 ```
 
 ## Daily Activity Pattern ##
-To observe the user's daily activty base on hours of the day, the following chart will uses the average steps taken on a given time interval over 2-monthof data to plot a time series chart.  
+To observe the user's daily activity base on hours of the day, the following chart will uses the average steps taken on a given time interval over 2-month of data to plot a time series chart.  
 
 ```{r}
 # what is the daily pattern like on 5 min intervals ####
@@ -74,7 +74,7 @@ subset(intervalAvg, avgInterval == max(intervalAvg$avgInterval), select=c(interv
 ```
 
 ## Missing Values ##
-There are many missing values within the database.  To replace the missing values, the average steps for each interval is calcuated over the 2-month period and assigned if steps are missing. 
+There are many missing values within the database.  To replace the missing values, the average steps for each interval is calculated over the 2-month period and assigned if steps are missing. 
 
 Number of Rows with Missing Data:
 ```{r}
@@ -113,7 +113,7 @@ median(dailyStepClean$steps, na.rm=TRUE)
 ## Weekdays vs. Weekend ##
 In general, a person with weekday work hours will show difference on the walking activity between weekdays and weekends.  To highlight the trend, the dates from the dataframe will be assigned a new factor column to differentiate the two categories.  
 
-The following R code tests each row and assigns "Weekend" if the date is either Saturday or Sunday.  The rest of the dates will get a "Weekday" value.  Using the new dataset, the time interval average is calcuated between the weekday and weekend categories.
+The following R code tests each row and assigns "Weekend" if the date is either Saturday or Sunday.  The rest of the dates will get a "Weekday" value.  Using the new dataset, the time interval average is calculated between the weekday and weekend categories.
 ```{r}
 # what is the difference between weekday and weekend activities ####
 mydataClean["weekdays"] <- NA
